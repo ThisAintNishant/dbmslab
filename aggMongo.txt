@@ -1,0 +1,164 @@
+lp19> db.createCollection("student")
+{ ok: 1 }
+lp19> db.student.insert({
+...     Roll_No: 101,
+...     name: "Alice",
+...     class: "TE",
+...     marks: 95,
+...     sports: ["Football", "Basketball"]
+... })
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("65463fdf602f8d981664ae8e") }
+}
+lp19> db.student.insert({
+...     Roll_No: 102,
+...     name: "Bob",
+...     class: "TE",
+...     marks: 85,
+...     sports: ["Cricket", "Badminton"]
+... })
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("65463feb602f8d981664ae8f") }
+}
+lp19> db.student.insert({
+...     Roll_No: 103,
+...     name: "Charlie",
+...     class: "SE",
+...     marks: 92,
+...     sports: ["Football"]
+... })
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("65463ff6602f8d981664ae90") }
+}
+lp19> db.student.insert({
+...     Roll_No: 104,
+...     name: "David",
+...     class: "TE",
+...     marks: 60,
+...     sports: ["Cricket"]
+... })
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("65464001602f8d981664ae91") }
+}
+lp19>
+(To exit, press Ctrl+C again or Ctrl+D or type .exit)
+lp19> db.student.insert({
+...     Roll_No: 105,
+...     name: "Eve",
+...     class: "TE",
+...     marks: 55,
+...     sports: ["Basketball"]
+... })
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6546400d602f8d981664ae92") }
+}
+lp19> db.student.aggregate([
+...     { $match: { class: "TE" } },
+...     { $sort: { marks: -1 } },
+...     { $limit: 5 }
+... ])
+[
+  {
+    _id: ObjectId("65463fdf602f8d981664ae8e"),
+    Roll_No: 101,
+    name: 'Alice',
+    class: 'TE',
+    marks: 95,
+    sports: [ 'Football', 'Basketball' ]
+  },
+  {
+    _id: ObjectId("65463feb602f8d981664ae8f"),
+    Roll_No: 102,
+    name: 'Bob',
+    class: 'TE',
+    marks: 85,
+    sports: [ 'Cricket', 'Badminton' ]
+  },
+  {
+    _id: ObjectId("65464001602f8d981664ae91"),
+    Roll_No: 104,
+    name: 'David',
+    class: 'TE',
+    marks: 60,
+    sports: [ 'Cricket' ]
+  },
+  {
+    _id: ObjectId("6546400d602f8d981664ae92"),
+    Roll_No: 105,
+    name: 'Eve',
+    class: 'TE',
+    marks: 55,
+    sports: [ 'Basketball' ]
+  }
+]
+lp19> db.student.aggregate([
+...     { $group: { _id: { class: "$class", division: "$division" }, maxMarks: { $max: "$marks" } } }
+... ])
+[
+  { _id: { class: 'TE' }, maxMarks: 95 },
+  { _id: { class: 'SE' }, maxMarks: 92 }
+]
+lp19> db.student.aggregate([
+...     { $group: { _id: { class: "$class", division: "$division" }, avgMarks: { $avg: "$marks" } } }
+... ])
+[
+  { _id: { class: 'TE' }, avgMarks: 73.75 },
+  { _id: { class: 'SE' }, avgMarks: 92 }
+]
+lp19> db.student.find({ class: "TE", division: "Comp A" }, { name: 1, Roll_NRoll_No: 1 })
+
+lp19> db.student.find({ class: "TE", division: "Comp A", marks: { $lt: 40 } }, { name: 1, Roll_No: 1, marks: 1 })
+
+lp19> db.student.find({}, { name: 1, class: 1, marks: 1 })
+[
+  {
+    _id: ObjectId("65463fdf602f8d981664ae8e"),
+    name: 'Alice',
+    class: 'TE',
+    marks: 95
+  },
+  {
+    _id: ObjectId("65463feb602f8d981664ae8f"),
+    name: 'Bob',
+    class: 'TE',
+    marks: 85
+  },
+  {
+    _id: ObjectId("65463ff6602f8d981664ae90"),
+    name: 'Charlie',
+    class: 'SE',
+    marks: 92
+  },
+  {
+    _id: ObjectId("65464001602f8d981664ae91"),
+    name: 'David',
+    class: 'TE',
+    marks: 60
+  },
+  {
+    _id: ObjectId("6546400d602f8d981664ae92"),
+    name: 'Eve',
+    class: 'TE',
+    marks: 55
+  }
+]
+lp19> db.student.find({ sports: "Football" }, { name: 1, sports: 1 })
+[
+  {
+    _id: ObjectId("65463fdf602f8d981664ae8e"),
+    name: 'Alice',
+    sports: [ 'Football', 'Basketball' ]
+  },
+  {
+    _id: ObjectId("65463ff6602f8d981664ae90"),
+    name: 'Charlie',
+    sports: [ 'Football' ]
+  }
+]
+lp19>
+
