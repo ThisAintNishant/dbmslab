@@ -89,7 +89,11 @@ b)	Find all customers who have both account and loan at bank.
 	select cust_name from borrower1 intersect select cust_name from depositor;	
 
 c)	Find all customers who have account but no loan at the bank.
-        select cust_name from depositor Minus select cust_name from borrower1;
+        SELECT Customers.CustomerID, Customers.CustomerName
+	FROM Customers
+	LEFT JOIN Loans ON Customers.CustomerID = Loans.CustomerID
+	WHERE Loans.CustomerID IS NULL;
+
 
 d)	Find average account balance at Akurdi branch.
 	select avg(balance) from account where branch_name='Kothrud';
